@@ -4,4 +4,5 @@
 
 8/11/2023 22:23
 - I've completed step 1, which was to complete the wheel assembly of one wheel, of the 27 step user manual to building this car.
-- I have began training Sully Chen's code on my MacBook. I'll keep it running as I sleep tonight and I'll check the results tomorrow. 
+- I have began training Sully Chen's code on my MacBook. I'll keep it running as I sleep tonight and I'll check the results tomorrow.
+- The MacBook is hot to the touch, and I am scared if I continue training, it will overheat my laptop. I will have to find another way to train Chen's model.
