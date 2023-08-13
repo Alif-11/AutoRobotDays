@@ -1,7 +1,7 @@
 # AutoRobotDays
 
 ## Streak
-2 (Good job pulling through!)
+3 (Tough work, nice!)
 
 ## Purpose
 This repository is more of a Journal, tracking my progress as I attempt to make my own self driving car. The benefit of hosting it on Github is that I can add, modify, and delete any related files and links I want that are related to this 'Journal' of mine. 
