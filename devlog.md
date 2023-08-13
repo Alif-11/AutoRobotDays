@@ -6,3 +6,8 @@
 - I've completed step 1, which was to complete the wheel assembly of one wheel, of the 27 step user manual to building this car.
 - I have began training Sully Chen's code on my MacBook. I'll keep it running as I sleep tonight and I'll check the results tomorrow.
 - The MacBook is hot to the touch, and I am scared if I continue training, it will overheat my laptop. I will have to find another way to train Chen's model.
+
+8/13/2023 10:07
+- Forgot to update last night so I'm updating now.
+- Tried to train Chen's ML model on my Macbook. Worked until I realized my Macbook might as well have been taking off into the sky with the noises it made and decided to try Google Colab
+- Turns out dropping 3 Gigs of images on Google Drive crashes it, so I had to zip it. Turns out unzipping 3 Gigs of images on Google Drive is a hassle, so I ran my gaming laptop all through the night of 8/12 to unzip the images. I am now almost done unzipping 44,000 images (41,000 have been unzipped)
