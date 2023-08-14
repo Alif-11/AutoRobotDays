@@ -11,3 +11,6 @@
 - Forgot to update last night so I'm updating now.
 - Tried to train Chen's ML model on my Macbook. Worked until I realized my Macbook might as well have been taking off into the sky with the noises it made and decided to try Google Colab
 - Turns out dropping 3 Gigs of images on Google Drive crashes it, so I had to zip it. Turns out unzipping 3 Gigs of images on Google Drive is a hassle, so I ran my gaming laptop all through the night of 8/12 to unzip the images. I am now almost done unzipping 44,000 images (41,000 have been unzipped)
+
+8/15/2023 16:08 
+- Finished step 7 of the robot. I finished both wheel assemblies, mounting servos to the camera pan-tilt mechanism, as well as mounting the batteries and battery holder to the main frame of the robot.
