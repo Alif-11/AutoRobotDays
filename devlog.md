@@ -19,4 +19,4 @@
 - Attached the Raspberry Pi, Raspberry Pi Sunfounder Robot HAT, and Sunfounder Servo controller onto the main frame of the car.
 
 8/16/2023 20:45
-- Attached both motors to the tail end of the mainframe. Attached the wheels to the motors. Wired up the motors, and the Robot HAT and Servo controller to each other.
+- Attached both motors to the tail end of the mainframe. Attached the driven wheels to the motors. Wired up the motors, and the Robot HAT and Servo controller to each other.
