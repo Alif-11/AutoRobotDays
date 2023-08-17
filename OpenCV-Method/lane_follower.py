@@ -1,20 +1,13 @@
+# the driver of the LaneFollower class
+import matplotlib.pyplot as plt
 import cv2 as cv
+import numpy as np
+from PIL import Image
+from LaneFollower import LaneFollower
 
-forward_lane_path = "lanes/forward_lane.jpg"
+def main():
+    lf = LaneFollower("lanes/forward_lane.jpg")
+    lf.plot()
+    lf.show_cv_img(1, img_title="Forward Lane")
 
-# forward_lane now contains an OpenCV Mat object of the image
-forward_lane = cv.imread(forward_lane_path)
-
-if forward_lane is None:
-    print("Forward lane could not be read in correctly")
-else:
-    cv.imshow("Forward Lane", forward_lane)
-    # waits for a user to press a key, in this case for 1000 milliseconds
-    cv.waitKey(1000)
-    cv.destroyAllWindows()
-
-    # TODO:
-    # Figure out a way to crop the image so the lane lines are
-    # the central focus of your image.
-    # https://stackoverflow.com/questions/48301186/cropping-concave-polygon-from-image-using-opencv-python
-    # Adapt the above stackoverflow code into your current program
+main()
