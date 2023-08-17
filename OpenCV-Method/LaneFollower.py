@@ -12,6 +12,22 @@ class LaneFollower:
         self.cv_img = cv.imread(lane_img_path)
         if self.cv_img is None:
             print("The lane image could not be read in correctly. Please try again.")
+    
+    def get_shape(self):
+        """
+            Returns the size of the image
+
+            Params:
+            - None
+
+            Returns:
+            - A tuple where:
+                - index 0 is the height of the image in pixels
+                - index 1 is the width of the image in pixels
+        """
+
+        # The third element contains the type of CvMat object, which I won't need in this project.
+        return self.cv_img.shape[0:2]
 
     def plot(self):
         """ 
@@ -43,7 +59,7 @@ class LaneFollower:
         cv.waitKey(duration*1000)
         cv.destroyAllWindows()
     
-    def crop(self, boundary_pts):
+    def crop(self, bound_pts):
         """
             Returns a cropped region of interest
 
@@ -55,10 +71,13 @@ class LaneFollower:
             Returns:
             - The cropped region of the image
         """
-
+        bound_rect = cv.boundingRect(bound_pts)
+        print(bound_rect)
+        # TODO: use bound_rect to crop out the region of interest
+        pass
 
     # TODO:
-    # Figure out a way to crop the image so the lane lines are
+    # Continue out a way to crop the image so the lane lines are
     # the central focus of your image.
     # https://stackoverflow.com/questions/48301186/cropping-concave-polygon-from-image-using-opencv-python
     # Adapt the above stackoverflow code into your current program
