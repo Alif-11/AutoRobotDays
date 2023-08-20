@@ -44,18 +44,21 @@ class LaneFollower:
         plt.imshow(graph)
         plt.show()
     
-    def show_cv_img(self, duration, img_title="Lane"):
+    def show_cv_img(self, duration, img=None, img_title="Lane"):
         """
             Displays the OpenCV image
 
             Params: 
             - duration (int): time to display the image in seconds
             - img_title (string): the title of the window in which the image is displayed
+            - img (OpenCV array): the image to be displayed
             
             Returns:
             - None, only displays the image using OpenCV
         """
-        cv.imshow(img_title, self.cv_img)
+        if img is None:
+            img = self.cv_img
+        cv.imshow(img_title, img)
         cv.waitKey(duration*1000)
         cv.destroyAllWindows()
     
@@ -71,10 +74,34 @@ class LaneFollower:
             Returns:
             - The cropped region of the image
         """
+
+        # Create a rectangle that encompasses the entire area of interest.
         bound_rect = cv.boundingRect(bound_pts)
-        print(bound_rect)
+        print("[LaneFollower.py] (x, y, width, height) = ", bound_rect)
+        print("[LaneFollower.py] Note: x and y in the above print statement are the coordinates of the top left point of the bounding polygon")
+        x, y, w, h = bound_rect
         # TODO: use bound_rect to crop out the region of interest
-        pass
+        cropped = self.cv_img[y:y+h, x:x+w].copy()
+
+        # subtract each column of data values by the smallest number in its column
+        bound_pts = bound_pts - bound_pts.min(axis=0)
+        #print("[LaneFollower.py] cropped.shape: ", cropped.shape)
+        mask = np.zeros(cropped.shape[:2], np.uint8)
+        # returning cropped to do intermediate testing
+        #return cropped
+        #return bound_pts
+        # a black and white image where the 
+        # black is the background
+        # and the white is the region bounded by the contours
+        #
+        # NOTE: making sure the 5th parameter, thickness, is negative is important for the bitwise operation below
+        # having it not be negative means your contour area is not filled in, in the mask. when you go to apply your mask
+        # onto your cropped image, it means you'll only see the the tiny sliver of the boundary of your cropped image
+        cv.drawContours(mask, [bound_pts], -1, (255, 255, 255), -1, cv.LINE_AA)
+
+        # Applies the mask to your cropped image, allowing you to go from rectangle crop to polygon crop.
+        dst = cv.bitwise_and(cropped, cropped, mask=mask)
+        return dst
 
     # TODO:
     # Continue out a way to crop the image so the lane lines are
