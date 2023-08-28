@@ -20,3 +20,7 @@
 
 8/16/2023 20:45
 - Attached both motors to the tail end of the mainframe. Attached the driven wheels to the motors. Wired up the motors, and the Robot HAT and Servo controller to each other.
+
+8/24 19:43
+- Wired up all three servos, completing wiring. Had to remove the steering servo as it was blocking access to HDMI port, which I needed for Raspberry Pi setup.
+- Finished up the code to crop an image to obtain just the lane lines. Researching how to obtain lane lines from the cropped photo.
