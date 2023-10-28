@@ -6,19 +6,35 @@ from PIL import Image
 forward_lane_path = "lanes/forward_lane.jpg"
 
 # A class that handles lane following on images
+
+
 class LaneFollower:
-    def __init__(self, lane_img_path):
-        self.lane_path = lane_img_path
-        self.cv_img = cv.imread(lane_img_path)
-        if self.cv_img is None:
-            print("The lane image could not be read in correctly. Please try again.")
-    
-    def get_shape(self):
+    def __init__(self):
+        pass
+
+    def read(self, img_path):
+        """
+            Reads in the image located at [img_path].
+            Throws an exception if the image cannot be properly read
+
+            Params:
+            - img_path (string): path location of the image
+
+            Returns:
+            - The image read from [img_path]
+        """
+        image = cv.imread(img_path)
+        if image is None:
+            raise Exception("Image could not be read properly.")
+        else:
+            return image
+
+    def get_shape(self, image):
         """
             Returns the size of the image
 
             Params:
-            - None
+            - image (Mat): the input image
 
             Returns:
             - A tuple where:
@@ -27,54 +43,55 @@ class LaneFollower:
         """
 
         # The third element contains the type of CvMat object, which I won't need in this project.
-        return self.cv_img.shape[0:2]
+        return image.shape[0:2]
 
-    def plot(self):
+    def plot(self, img_path):
         """ 
             A function that plots the object's image on a 
             graph whose axes are the width and height of said image
 
             Params: 
-            - None
+            - img_path (string): path location of the image
 
             Returns: 
             - None, only plots the image
         """
-        graph = np.asarray(Image.open(self.lane_path))
+        graph = np.asarray(Image.open(img_path))
         plt.imshow(graph)
         plt.show()
-    
-    def show_cv_img(self, duration, img=None, img_title="Lane"):
+
+    def show_cv_img(self, duration, img_path, img_title="Lane"):
         """
             Displays the OpenCV image
 
             Params: 
             - duration (int): time to display the image in seconds
             - img_title (string): the title of the window in which the image is displayed
-            - img (OpenCV array): the image to be displayed
-            
+            - img_path (string): path location of the image
+
             Returns:
             - None, only displays the image using OpenCV
         """
-        if img is None:
-            img = self.cv_img
+        img = self.read(img_path)
         cv.imshow(img_title, img)
         cv.waitKey(duration*1000)
         cv.destroyAllWindows()
-    
+
     # NOTE: The code written below was adapted from: https://stackoverflow.com/questions/48301186/cropping-concave-polygon-from-image-using-opencv-python
-    def crop(self, bound_pts, file):
+    def crop_roi(self, bound_pts, source_image):
         """
-            Returns a cropped region of interest
+            Takes in the input image of [source_image], crops it based on 
+            [bound_pts], and returns the cropped image
 
             Params:
-            - bound_pts (Numpy array): A numpy array of ordered pairs of points that specify the perimeter
-                                       of the region of interest
-                                       example: [[0,0], [0, 100], [100, 100], [100,0]]
-            - file (string): the location to which the cropped photo should be saved
-            
+            - bound_pts (Numpy array): 
+                        a numpy array of ordered pairs of points 
+                        that specify the perimeter of the region of interest
+                        example: [[0,0], [0, 100], [100, 100], [100,0]]
+            - source_image (Mat): our input image
+
             Returns:
-            - The cropped region of the image
+            - The cropped image
         """
 
         # Create a rectangle that encompasses the entire area of interest.
@@ -82,11 +99,11 @@ class LaneFollower:
         print("[LaneFollower.py] (x, y, width, height) = ", bound_rect)
         print("[LaneFollower.py] Note: x and y in the above print statement are the coordinates of the top left point of the bounding polygon")
         x, y, w, h = bound_rect
-        cropped = self.cv_img[y:y+h, x:x+w].copy()
+        # read in the image
+        cropped = source_image[y:y+h, x:x+w].copy()
 
         # Subtract each column of data values by the smallest number in its column
         bound_pts = bound_pts - bound_pts.min(axis=0)
-        #print("[LaneFollower.py] cropped.shape: ", cropped.shape)
         mask = np.zeros(cropped.shape[:2], np.uint8)
 
         # NOTE: Making sure the 5th parameter, thickness, is negative is important for the bitwise operation below
@@ -96,18 +113,37 @@ class LaneFollower:
 
         # Applies the mask to your cropped image, allowing you to go from rectangle crop to polygon crop.
         dst = cv.bitwise_and(cropped, cropped, mask=mask)
-        cv.imwrite(file, dst)
 
         # Return the cropped image
         return dst
-    
+
+    # TODO
+    def crop_by_color(self, color_range, image):
+        """
+            Takes in the input image stored at [file], applies a mask to it 
+            which selects for pixels whose BGR values fall within [color_range],
+            and stores the modified image to PATH [file]
+
+            Params:
+            - color_range (double (triple int tuple) tuple): 
+                          any pixels in [file] whose BGR values fall between
+                          the first and second components of [color_range] will
+                          appear in the returned file
+
+            - image (Mat): the input image
+
+            Returns:
+            - A modified [image] which has been cropped based on [color_range]
+        """
+        pass
+
     # NOTE: The code written below was adapted from: https://stackoverflow.com/questions/45322630/how-to-detect-lines-in-opencv
-    def detect_lanes(self, lane):
+    def detect_lanes(self, cropped):
         """
             Returns an array containing the identified lane lines in the photo
-            
+
             Params:
-            - lane (string): contains the path that leads to the cropped jpeg file
+            - cropped (Mat): the cropped image
 
             Returns: 
             - an array of all the detected lanes in the photo. each lane in the array,
@@ -115,14 +151,13 @@ class LaneFollower:
               the x and y coordinate of the starting point, and 
               the x and y coordinate of the ending point
         """
-        cropped = cv.imread(lane)
-        # This line converts the color space of one image to another color space. 
+        # This line converts the color space of one image to another color space.
         # 7 corresponds to the RGB2GRAY conversion, making RGB images Gray Scale
         gray_cropped = cv.cvtColor(cropped, 7)
-        #cv.imshow("Gray Scale Cropped Image", gray_cropped)
-        #cv.waitKey(2000)
+        # cv.imshow("Gray Scale Cropped Image", gray_cropped)
+        # cv.waitKey(2000)
 
-        # Runs a Gaussian Blur on the image. The dimensions of the kernel size 
+        # Runs a Gaussian Blur on the image. The dimensions of the kernel size
         # (the tuple) must be two odd numbers, not necessarily the same
         blur_gray_cropped = cv.GaussianBlur(gray_cropped, (5, 5), 0)
         cv.imshow("Blur Gray Scale", blur_gray_cropped)
@@ -132,7 +167,8 @@ class LaneFollower:
         high_threshold = 150
         # Runs Canny Edge detection on the image. The thresholds specify the range of
         # potentially acceptable edge intensities. Those above the high_threshold are guaranteed to be edges.
-        cropped_edges = cv.Canny(blur_gray_cropped, low_threshold, high_threshold)
+        cropped_edges = cv.Canny(
+            blur_gray_cropped, low_threshold, high_threshold)
 
         cv.imshow("Edges", cropped_edges)
         cv.waitKey(2000)
